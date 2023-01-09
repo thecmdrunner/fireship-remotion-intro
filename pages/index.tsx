@@ -178,7 +178,7 @@ const Home: NextPage<{
             >
               {" ("}skip to{" "}
               <code className="cursor-pointer bg-gray-700 text-yellow-400 rounded-md px-2 py-1">
-                00:80
+                01:20
               </code>
               {")"}
             </span>
