@@ -351,9 +351,13 @@ const Home: NextPage<{
         </p>
 
         <p className="text-white mt-2 text-xl">
-          Written in{" "}
+          Powered by{" "}
           <Link href="https://nextjs.org/">
             <span className="text-yellow-400">Next.js</span>
+          </Link>{" "}
+          and{" "}
+          <Link href="https://mantine.dev/">
+            <span className="text-yellow-400">Mantine</span>
           </Link>
           {", "}
           hosted on Vercel.
