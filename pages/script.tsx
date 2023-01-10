@@ -1,7 +1,202 @@
 import { NextPage } from "next";
 import React from "react";
 import { Prism } from "@mantine/prism";
-import { Button, Group, MantineProvider } from "@mantine/core";
+import { MantineProvider, Loader } from "@mantine/core";
+import { AppShell, Navbar, Header } from "@mantine/core";
+
+import { useState } from "react";
+import { SegmentedControl, Text, createStyles } from "@mantine/core";
+import {
+  IconShoppingCart,
+  IconLicense,
+  IconMessage2,
+  IconBellRinging,
+  IconMessages,
+  IconFingerprint,
+  IconKey,
+  IconSettings,
+  Icon2fa,
+  IconUsers,
+  IconFileAnalytics,
+  IconDatabaseImport,
+  IconReceipt2,
+  IconReceiptRefund,
+  IconLogout,
+  IconSwitchHorizontal,
+} from "@tabler/icons";
+
+const useStyles = createStyles((theme, _params, getRef) => {
+  const icon = getRef("icon");
+
+  return {
+    navbar: {
+      backgroundColor:
+        theme.colorScheme === "dark" ? theme.colors.dark[7] : theme.white,
+    },
+
+    title: {
+      textTransform: "uppercase",
+      letterSpacing: -0.25,
+    },
+
+    link: {
+      ...theme.fn.focusStyles(),
+      display: "flex",
+      alignItems: "center",
+      textDecoration: "none",
+      fontSize: theme.fontSizes.sm,
+      color:
+        theme.colorScheme === "dark"
+          ? theme.colors.dark[1]
+          : theme.colors.gray[7],
+      padding: `${theme.spacing.xs}px ${theme.spacing.sm}px`,
+      borderRadius: theme.radius.sm,
+      fontWeight: 500,
+
+      "&:hover": {
+        backgroundColor:
+          theme.colorScheme === "dark"
+            ? theme.colors.dark[6]
+            : theme.colors.gray[0],
+        color: theme.colorScheme === "dark" ? theme.white : theme.black,
+
+        [`& .${icon}`]: {
+          color: theme.colorScheme === "dark" ? theme.white : theme.black,
+        },
+      },
+    },
+
+    linkIcon: {
+      ref: icon,
+      color:
+        theme.colorScheme === "dark"
+          ? theme.colors.dark[2]
+          : theme.colors.gray[6],
+      marginRight: theme.spacing.sm,
+    },
+
+    linkActive: {
+      "&, &:hover": {
+        backgroundColor: theme.fn.variant({
+          variant: "light",
+          color: theme.primaryColor,
+        }).background,
+        color: theme.fn.variant({ variant: "light", color: theme.primaryColor })
+          .color,
+        [`& .${icon}`]: {
+          color: theme.fn.variant({
+            variant: "light",
+            color: theme.primaryColor,
+          }).color,
+        },
+      },
+    },
+
+    footer: {
+      borderTop: `1px solid ${
+        theme.colorScheme === "dark"
+          ? theme.colors.dark[4]
+          : theme.colors.gray[3]
+      }`,
+      paddingTop: theme.spacing.md,
+    },
+  };
+});
+
+const tabs = {
+  account: [
+    { link: "", label: "Notifications", icon: IconBellRinging },
+    { link: "", label: "Billing", icon: IconReceipt2 },
+    { link: "", label: "Security", icon: IconFingerprint },
+    { link: "", label: "SSH Keys", icon: IconKey },
+    { link: "", label: "Databases", icon: IconDatabaseImport },
+    { link: "", label: "Authentication", icon: Icon2fa },
+    { link: "", label: "Other Settings", icon: IconSettings },
+  ],
+  general: [
+    { link: "", label: "Orders", icon: IconShoppingCart },
+    { link: "", label: "Receipts", icon: IconLicense },
+    { link: "", label: "Reviews", icon: IconMessage2 },
+    { link: "", label: "Messages", icon: IconMessages },
+    { link: "", label: "Customers", icon: IconUsers },
+    { link: "", label: "Refunds", icon: IconReceiptRefund },
+    { link: "", label: "Files", icon: IconFileAnalytics },
+  ],
+};
+
+function NavbarSegmented() {
+  const { classes, cx } = useStyles();
+  const [section, setSection] = useState<"account" | "general">("account");
+  const [active, setActive] = useState("Billing");
+
+  const links = tabs[section].map((item) => (
+    <a
+      className={cx(classes.link, {
+        [classes.linkActive]: item.label === active,
+      })}
+      href={item.link}
+      key={item.label}
+      onClick={(event) => {
+        event.preventDefault();
+        setActive(item.label);
+      }}
+    >
+      <item.icon className={classes.linkIcon} stroke={1.5} />
+      <span>{item.label}</span>
+    </a>
+  ));
+
+  return (
+    <Navbar height={840} width={{ sm: 300 }} p="md" className={classes.navbar}>
+      <Navbar.Section>
+        <Text
+          weight={500}
+          size="sm"
+          className={classes.title}
+          color="dimmed"
+          mb="xs"
+        >
+          Code Report Script Playground
+        </Text>
+
+        <SegmentedControl
+          value={section}
+          onChange={(value: "account" | "general") => setSection(value)}
+          transitionTimingFunction="ease"
+          fullWidth
+          data={[
+            { label: "Account", value: "account" },
+            { label: "System", value: "general" },
+          ]}
+        />
+      </Navbar.Section>
+
+      <Navbar.Section grow mt="xl">
+        {links}
+      </Navbar.Section>
+
+      <Navbar.Section className={classes.footer}>
+        <a
+          href="#"
+          className={classes.link}
+          onClick={(event) => event.preventDefault()}
+        >
+          <IconSwitchHorizontal className={classes.linkIcon} stroke={1.5} />
+          <span>Change account</span>
+        </a>
+
+        <a
+          href="#"
+          className={classes.link}
+          onClick={(event) => event.preventDefault()}
+        >
+          <IconLogout className={classes.linkIcon} stroke={1.5} />
+          <span>Logout</span>
+        </a>
+      </Navbar.Section>
+    </Navbar>
+  );
+}
 
 const Script: NextPage = () => {
   const demoCode = `
@@ -77,30 +272,43 @@ const Script: NextPage = () => {
   ]
 }
 `;
-  console.log(JSON.parse(demoCode));
+  // console.log(JSON.parse(demoCode));
   return (
-    <MantineProvider
-      theme={{ colorScheme: "dark" }}
-      withGlobalStyles
-      withNormalizeCSS
+    <AppShell
+      padding="md"
+      navbar={
+        <Navbar width={{ base: 300 }} height={500} p="xs">
+          {/* Navbar content */}
+        </Navbar>
+      }
+      header={
+        <Header height={60} p="xs">
+          {/* Header content */}
+        </Header>
+      }
+      styles={(theme) => ({
+        main: {
+          colorScheme: "dark",
+          backgroundColor: theme.colors.dark[8],
+        },
+      })}
     >
-      <Group position="center">
-        <Button variant="gradient">Default gradient button</Button>
-        <MantineProvider
-          inherit
-          theme={{
-            defaultGradient: {
-              from: "orange",
-              to: "red",
-              deg: 45,
-            },
-          }}
-        >
-          <Button variant="gradient">Gradient from provider</Button>
-        </MantineProvider>
-      </Group>
-      <Prism language="tsx">{demoCode}</Prism>;
-    </MantineProvider>
+      <div className="flex flex-col mx-auto w-3/4">
+        <Loader variant="dots" />
+        <Loader variant="bars" />
+        <Loader variant="oval" />
+        <Prism language="tsx">{demoCode}</Prism>;
+      </div>
+      {/* Your application here */}
+    </AppShell>
+    // <MantineProvider
+    //   theme={{ colorScheme: "dark", loader: "bars" }}
+    //   withGlobalStyles
+    //   withNormalizeCSS
+    // >
+    //   <NavbarSegmented />
+
+    // </MantineProvider>
   );
 };
 
