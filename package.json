@@ -24,6 +24,7 @@
     "@remotion/player": "3.3.25",
     "@remotion/preload": "^3.3.25",
     "@remotion/three": "^3.3.25",
+    "@tabler/icons": "^1.119.0",
     "@vercel/og": "^0.0.23",
     "axios": "^1.2.2",
     "blueimp-md5": "^2.19.0",
