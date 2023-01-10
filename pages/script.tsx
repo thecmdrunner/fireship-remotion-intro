@@ -276,11 +276,10 @@ const Script: NextPage = () => {
   return (
     <AppShell
       padding="md"
-      navbar={
-        <Navbar width={{ base: 300 }} height={500} p="xs">
-          {/* Navbar content */}
-        </Navbar>
-      }
+      navbar={<NavbarSegmented />}
+      // <Navbar width={{ base: 300 }} height={500} p="xs">
+      //   {/* Navbar content */}
+      // </Navbar>
       header={
         <Header height={60} p="xs">
           {/* Header content */}
@@ -288,8 +287,9 @@ const Script: NextPage = () => {
       }
       styles={(theme) => ({
         main: {
-          colorScheme: "dark",
-          backgroundColor: theme.colors.dark[8],
+          backgroundColor: !theme.colorScheme
+            ? theme.colors.dark[8]
+            : theme.colors.gray[0],
         },
       })}
     >
