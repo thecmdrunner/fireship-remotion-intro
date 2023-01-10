@@ -221,7 +221,7 @@ const Home: NextPage<{
             clickToPlay={animationRenderer == "mp4"} // For less annoying panning in threejs
             initiallyShowControls
             spaceKeyToPlayOrPause
-            loop
+            loop={false} // Avoids audio delay and glitches
             controls
             inputProps={{
               animationRenderer: animationRenderer,
