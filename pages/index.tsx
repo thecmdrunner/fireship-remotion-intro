@@ -19,7 +19,6 @@ interface TTSServerResponse {
   url?: string;
   error?: string;
 }
-
 // Cubano Font
 const CubanoFont: NextFont = localFont({ src: "../components/Cubano.woff2" });
 
