@@ -42,7 +42,7 @@ export default async function handler(
 
   const { newsQuery } = req.body || "chatGPT";
 
-  const news = await fetchNews({ query: newsQuery });
+  //   const news = await fetchNews({ query: newsQuery });
 
-  return res.json(news);
+  return;
 }
