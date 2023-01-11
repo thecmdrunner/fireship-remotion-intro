@@ -1,14 +1,16 @@
-import { AbsoluteFill, Audio, Video } from "remotion";
+import { AbsoluteFill, Audio, prefetch, Video } from "remotion";
 // import { preloadVideo } from "@remotion/preload";
 import { ProjectURL } from "../constants";
 
 const AnimationVideo: React.FC<{ AnimationAudioURL: string }> = ({
   AnimationAudioURL,
 }) => {
-  //   preloadVideo("/CRAnimation.mp4");
+  const videoURL = ProjectURL + "/CRAnimation.mp4";
+
+  //   preloadVideo(videoURL);
   return (
     <AbsoluteFill>
-      <Video src={`${ProjectURL}/CRAnimation.mp4`} />
+      <Video src={videoURL} />
 
       <Audio src={AnimationAudioURL} />
     </AbsoluteFill>

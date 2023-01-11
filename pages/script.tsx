@@ -23,6 +23,7 @@ import {
   IconReceiptRefund,
   IconLogout,
   IconSwitchHorizontal,
+  IconNews,
 } from "@tabler/icons";
 
 const useStyles = createStyles((theme, _params, getRef) => {
@@ -105,6 +106,7 @@ const useStyles = createStyles((theme, _params, getRef) => {
 
 const tabs = {
   account: [
+    { link: "", label: "Fetch news", icon: IconNews },
     { link: "", label: "Notifications", icon: IconBellRinging },
     { link: "", label: "Billing", icon: IconReceipt2 },
     { link: "", label: "Security", icon: IconFingerprint },
@@ -147,7 +149,7 @@ function NavbarSegmented() {
   ));
 
   return (
-    <Navbar height={840} width={{ sm: 300 }} p="md" className={classes.navbar}>
+    <Navbar width={{ sm: 300 }} p="sm" className={classes.navbar}>
       <Navbar.Section>
         <Text
           weight={500}
@@ -201,8 +203,6 @@ function NavbarSegmented() {
 const Script: NextPage = () => {
   const demoCode = `
 {
-  "status": "ok",
-  "totalResults": 5,
   "articles": [
     {
       "source": {
@@ -272,19 +272,49 @@ const Script: NextPage = () => {
   ]
 }
 `;
+
+  const newsJSON = `
+{
+  articles: [
+    {
+      source: "Il Sole 24 Ore",
+      title: "",
+      description: "",
+      url: "",
+      imageURL: "",
+      publishedAt: "",
+      content: "",
+    },
+    {
+      source: "Il Sole 24 Ore",
+      title: "",
+      description: "",
+      url: "",
+      imageURL: "",
+      publishedAt: "",
+      content: "",
+    },
+    {
+      source: "Il Sole 24 Ore",
+      title: "",
+      description: "",
+      url: "",
+      imageURL: "",
+      publishedAt: "",
+      content: "",
+    },
+  ],
+}`;
+
   // console.log(JSON.parse(demoCode));
   return (
     <AppShell
-      padding="md"
+      padding="sm"
       navbar={<NavbarSegmented />}
       // <Navbar width={{ base: 300 }} height={500} p="xs">
       //   {/* Navbar content */}
       // </Navbar>
-      header={
-        <Header height={60} p="xs">
-          {/* Header content */}
-        </Header>
-      }
+      // header={<Header height={60} p="xs">{/* Header content */}</Header>}
       styles={(theme) => ({
         main: {
           backgroundColor: !theme.colorScheme
@@ -293,11 +323,22 @@ const Script: NextPage = () => {
         },
       })}
     >
-      <div className="flex flex-col mx-auto w-3/4">
-        <Loader variant="dots" />
-        <Loader variant="bars" />
-        <Loader variant="oval" />
-        <Prism language="tsx">{demoCode}</Prism>;
+      <div className="flex flex-wrap justify-evenly mx-auto w-full">
+        {/* <Loader variant="dots" /><Loader variant="bars" /><Loader variant="oval" /> */}
+        <MantineProvider
+          inherit
+          theme={{ colorScheme: "dark", loader: "bars" }}
+          withGlobalStyles
+          withNormalizeCSS
+        >
+          {[1, 2, 3].map((item, index) => {
+            return (
+              <Prism key={index} className="w-[30rem]" language="tsx">
+                {newsJSON}
+              </Prism>
+            );
+          })}
+        </MantineProvider>
       </div>
       {/* Your application here */}
     </AppShell>
