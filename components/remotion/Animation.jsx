@@ -123,7 +123,7 @@ const Animation = ({ AnimationAudioURL }) => {
 
                 250,
               ]}
-              args={["wireframe"]}
+              // args={["wireframe"]}
             />
             <mesh
               position={[-5, modelPositionY, modelPositionZ]}
