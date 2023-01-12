@@ -1,5 +1,5 @@
-import { AbsoluteFill } from "remotion";
-import { Player, RenderPoster } from "@remotion/player";
+import { AbsoluteFill, prefetch } from "remotion";
+import { Player, PlayerRef, RenderPoster } from "@remotion/player";
 import { preloadAudio, resolveRedirect } from "@remotion/preload";
 import { useEffect, useRef, useState, useCallback } from "react";
 import axios from "axios";
@@ -53,12 +53,26 @@ const getTTSFromAPI = async (
 //   const imgURL = ProjectURL + `/api/getthumbnail?`;
 // };
 
+const videoURL =
+  "https://res.cloudinary.com/drnm9lhef/video/upload/v1673514377/fireship-remotion-intro/CRAnimation_wvexmw.mp4";
+
+const { free, waitUntilDone } = prefetch(videoURL, {
+  method: "blob-url",
+});
+
+waitUntilDone().then(() => {
+  console.log("Video has finished loading from cloudinary!");
+});
+
+// Call free() if you want to un-prefetch and free up the memory:
+free();
+
 const Home: NextPage<{
   data: TTSServerResponse;
 }> = (props) => {
   const { data } = props;
 
-  const playerRef = useRef(null);
+  const playerRef = useRef<PlayerRef>(null);
   const [dateProp, setDateProp] = useState<Date>(initialDate);
   const [audioToLoad, setAudioToLoad] = useState<string>(data.url);
   const [animationRenderer, setAnimationRenderer] = useState<string>("mp4"); // possible values: "threejs", "mp4"
@@ -172,12 +186,12 @@ const Home: NextPage<{
             <span
               className="italic font-normal"
               onClick={() => {
-                playerRef.current.seekTo(80);
+                playerRef.current.seekTo(47);
               }}
             >
               {" ("}skip to{" "}
               <code className="cursor-pointer bg-gray-700 text-yellow-400 rounded-md px-2 py-1">
-                01:20
+                01:17
               </code>
               {")"}
             </span>
