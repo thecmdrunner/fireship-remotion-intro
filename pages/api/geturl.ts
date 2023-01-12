@@ -176,7 +176,8 @@ export default async function handler(
     return res.status(200).json(finalRes);
   } catch (error) {
     return res.status(400).json({
-      msg: "Oops, something went wrong.... Check logs in GCP. I will not send the error here.",
+      msg: "Oops, something went wrong.... Check logs in GCP. I will not send the error here. Here's a random audio URL instead.",
+      url: "https://file-examples.com/wp-content/uploads/2017/11/file_example_MP3_700KB.mp3",
     });
   }
 }
