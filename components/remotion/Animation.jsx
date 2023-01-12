@@ -24,7 +24,7 @@ const FireshipLogo = "/fireship-simple.glb";
 const CodeReportText = "/code-report.glb";
 const fireshipTexture = "/big-gradient.png";
 
-const Animation = ({ AnimationAudioURL }) => {
+const Animation = () => {
   const frame = useCurrentFrame();
   const { width, height, fps, durationInFrames } = useVideoConfig();
 
@@ -166,7 +166,7 @@ const Animation = ({ AnimationAudioURL }) => {
         </PerspectiveCamera>
       </ThreeCanvas>
 
-      <Audio src={AnimationAudioURL} />
+      {/* <Audio src={AnimationAudioURL} /> */}
       {/* <Audio src={static1File(AnimationAudioURL)} /> */}
     </div>
   );
