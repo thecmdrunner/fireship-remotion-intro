@@ -138,11 +138,11 @@ export default async function handler(
   // AVOIDING CREATION OF NEW AUDIO FILES TO PREVENT API ABUSE
 
   // REMOVE THIS BLOCK TO REVERT BACK TO NORMAL BEHAVIOUR.
-  console.log("Tried to generate audio for new date");
-  return res.status(200).json({
-    msg: "Synthesis of new audio not allowed until I. Here's a random audio URL instead.",
-    url: "https://file-examples.com/wp-content/uploads/2017/11/file_example_MP3_700KB.mp3",
-  });
+  // console.log("Tried to generate audio for new date");
+  // return res.status(200).json({
+  //   msg: "Synthesis of new audio not allowed until I. Here's a random audio URL instead.",
+  //   url: "https://file-examples.com/wp-content/uploads/2017/11/file_example_MP3_700KB.mp3",
+  // });
   // REMOVE THIS BLOCK TO REVERT BACK TO NORMAL BEHAVIOUR.
 
   try {
