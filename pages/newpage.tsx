@@ -23,17 +23,17 @@ import {
 const Page = () => {
   return (
     <div className="flex flex-wrap items-center justify-center h-screen w- bg-gray-400">
-      <div className="w-[20rem] h-full bg-pink-200">
+      <div className="lg:w-[20rem] h-full bg-pink-200">
         {tabs.account.map((item, index) => {
           return <p key={index}>{item.label}</p>;
         })}
       </div>
-      <div className="flex-auto h-full bg-yellow-200">
+      <div className="flex-1 h-full bg-yellow-200">
         {tabs.account.map((item, index) => {
           return <p key={index}>{item.label}</p>;
         })}
       </div>
-      <div className="flex-auto h-full bg-blue-200">
+      <div className="flex-1 h-full bg-blue-200">
         {tabs.account.map((item, index) => {
           return <p key={index}>{item.label}</p>;
         })}
