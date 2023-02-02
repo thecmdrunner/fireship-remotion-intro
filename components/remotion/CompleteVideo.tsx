@@ -1,8 +1,7 @@
 import Intro from "./Intro";
 import AnimationVideo from "./AnimationVideo";
 import Animation from "./Animation";
-import { AbsoluteFill, Audio, prefetch, Sequence } from "remotion";
-import { ProjectURL } from "../constants";
+import { AbsoluteFill, Audio, Sequence } from "remotion";
 
 const CompleteVideo: React.FC<{
   animationRenderer: string;
