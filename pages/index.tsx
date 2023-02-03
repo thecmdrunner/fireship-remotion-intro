@@ -72,9 +72,7 @@ const Home: NextPage<{
   const playerRef = useRef<PlayerRef>(null);
   const [dateProp, setDateProp] = useState<Date>(initialDate);
   const [audioToLoad, setAudioToLoad] = useState<string>(data.url);
-  const [animationRenderer, setAnimationRenderer] = useState<"threejs" | "mp4">(
-    "mp4"
-  ); // possible values are "threejs" and "mp4" (default)
+  const [animationRenderer, setAnimationRenderer] = useState("mp4"); // possible values are "threejs" and "mp4" (default)
 
   const changeDateAndFetchNewAudio = async (newSetDate: Date) => {
     console.log(`Setting new audio URL...`);
