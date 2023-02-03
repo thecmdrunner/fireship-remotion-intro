@@ -1,10 +1,10 @@
-import { AbsoluteFill } from "remotion";
-import { Player, RenderPoster } from "@remotion/player";
+import { AbsoluteFill, prefetch } from "remotion";
+import { Player, PlayerRef, RenderPoster } from "@remotion/player";
 import { preloadAudio, resolveRedirect } from "@remotion/preload";
 import { useEffect, useRef, useState, useCallback } from "react";
 import axios from "axios";
 import CompleteVideo from "../components/remotion/CompleteVideo";
-import { ProjectURL } from "../components/constants";
+import { animationVideoURL, ProjectURL } from "../components/constants";
 import dayjs from "dayjs";
 import { Calendar } from "@mantine/dates";
 import { SegmentedControl } from "@mantine/core";
@@ -19,7 +19,6 @@ interface TTSServerResponse {
   url?: string;
   error?: string;
 }
-
 // Cubano Font
 const CubanoFont: NextFont = localFont({ src: "../components/Cubano.woff2" });
 
@@ -54,15 +53,28 @@ const getTTSFromAPI = async (
 //   const imgURL = ProjectURL + `/api/getthumbnail?`;
 // };
 
+const { free, waitUntilDone } = prefetch(animationVideoURL, {
+  method: "blob-url",
+});
+
+waitUntilDone().then(() => {
+  console.log("Video has finished loading from cloudinary!");
+});
+
+// Call free() if you want to un-prefetch and free up the memory:
+free();
+
 const Home: NextPage<{
   data: TTSServerResponse;
 }> = (props) => {
   const { data } = props;
 
-  const playerRef = useRef(null);
+  const playerRef = useRef<PlayerRef>(null);
   const [dateProp, setDateProp] = useState<Date>(initialDate);
   const [audioToLoad, setAudioToLoad] = useState<string>(data.url);
-  const [animationRenderer, setAnimationRenderer] = useState<string>("mp4"); // possible values: "threejs", "mp4"
+  const [animationRenderer, setAnimationRenderer] = useState<"threejs" | "mp4">(
+    "mp4"
+  ); // possible values are "threejs" and "mp4" (default)
 
   const changeDateAndFetchNewAudio = async (newSetDate: Date) => {
     console.log(`Setting new audio URL...`);
@@ -173,12 +185,12 @@ const Home: NextPage<{
             <span
               className="italic font-normal"
               onClick={() => {
-                playerRef.current.seekTo(80);
+                playerRef.current.seekTo(47);
               }}
             >
               {" ("}skip to{" "}
               <code className="cursor-pointer bg-gray-700 text-yellow-400 rounded-md px-2 py-1">
-                01:20
+                01:17
               </code>
               {")"}
             </span>
@@ -352,9 +364,13 @@ const Home: NextPage<{
         </p>
 
         <p className="text-white mt-2 text-xl">
-          Written in{" "}
+          Powered by{" "}
           <Link href="https://nextjs.org/">
             <span className="text-yellow-400">Next.js</span>
+          </Link>{" "}
+          and{" "}
+          <Link href="https://mantine.dev/">
+            <span className="text-yellow-400">Mantine</span>
           </Link>
           {", "}
           hosted on Vercel.

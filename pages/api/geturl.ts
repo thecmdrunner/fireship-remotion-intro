@@ -7,7 +7,14 @@ import textToSpeech from "@google-cloud/text-to-speech";
 import { NextApiRequest, NextApiResponse } from "next";
 
 // Init TTS
-const client = new textToSpeech.TextToSpeechClient();
+const client = new textToSpeech.TextToSpeechClient({
+  credentials: {
+    private_key: process.env.GOOGLE_CLOUD_PRIVATE_KEY,
+    client_email: process.env.GOOGLE_CLOUD_CLIENT_EMAIL,
+    client_id: process.env.GOOGLE_CLOUD_CLIENT_ID,
+  },
+});
+
 // Initialize Firebase
 initializeApp({
   apiKey: process.env.FIREBASE_API_KEY,
@@ -18,10 +25,11 @@ initializeApp({
   appId: process.env.FIREBASE_APP_ID,
 });
 
+// Toggle this to allow/restrict new audio generation.
+const toDisableAudioAPI = true;
+
 // For upload and creation reference
 const bucketName = "tts-audio-files";
-
-// process.env.GOOGLE_APPLICATION_CREDENTIALS = "serviceaccount.json";
 
 const uploadToFirebase = async (audioData: any, fileName: string) => {
   // init firebase storage
@@ -138,11 +146,15 @@ export default async function handler(
   // AVOIDING CREATION OF NEW AUDIO FILES TO PREVENT API ABUSE
 
   // REMOVE THIS BLOCK TO REVERT BACK TO NORMAL BEHAVIOUR.
-  console.log("Tried to generate audio for new date");
-  return res.status(200).json({
-    msg: "Synthesis of new audio not allowed until I. Here's a random audio URL instead.",
-    url: "https://file-examples.com/wp-content/uploads/2017/11/file_example_MP3_700KB.mp3",
-  });
+  if (toDisableAudioAPI) {
+    console.log(
+      `Tried to generate new audio when restricted: text: ${text}, ssml: ${ssml}.`
+    );
+    return res.status(200).json({
+      msg: "Synthesis of new audio not allowed until I approve. Here's a random audio URL instead.",
+      url: "https://file-examples.com/wp-content/uploads/2017/11/file_example_MP3_700KB.mp3",
+    });
+  }
   // REMOVE THIS BLOCK TO REVERT BACK TO NORMAL BEHAVIOUR.
 
   try {
@@ -175,8 +187,12 @@ export default async function handler(
 
     return res.status(200).json(finalRes);
   } catch (error) {
+    console.log(`💔 Error occurred:`);
+    console.table(error);
+
     return res.status(400).json({
-      msg: "Oops, something went wrong.... Check logs in GCP. I will not send the error here.",
+      msg: "Oops, something went wrong.... I will not send the error here, check the dashboard instead. Here's a random audio URL instead.",
+      url: "https://file-examples.com/wp-content/uploads/2017/11/file_example_MP3_700KB.mp3",
     });
   }
 }

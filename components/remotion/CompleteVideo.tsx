@@ -1,8 +1,7 @@
 import Intro from "./Intro";
 import AnimationVideo from "./AnimationVideo";
 import Animation from "./Animation";
-
-import { AbsoluteFill, Sequence } from "remotion";
+import { AbsoluteFill, Audio, Sequence } from "remotion";
 
 const CompleteVideo: React.FC<{
   animationRenderer: string;
@@ -24,12 +23,13 @@ const CompleteVideo: React.FC<{
         />
       </Sequence>
       <Sequence from={47}>
+        <Audio src={AnimationAudioURL} />
         {animationRenderer == "threejs" ? (
           // This renders the Threejs canvas
-          <Animation AnimationAudioURL={AnimationAudioURL} />
+          <Animation />
         ) : (
           //  This plays a pre-rendered mp4 of the Threejs animation
-          <AnimationVideo AnimationAudioURL={AnimationAudioURL} />
+          <AnimationVideo />
         )}
       </Sequence>
     </AbsoluteFill>
