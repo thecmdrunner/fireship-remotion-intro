@@ -4,7 +4,7 @@ import { preloadAudio, resolveRedirect } from "@remotion/preload";
 import { useEffect, useRef, useState, useCallback } from "react";
 import axios from "axios";
 import CompleteVideo from "../components/remotion/CompleteVideo";
-import { ProjectURL } from "../components/constants";
+import { animationVideoURL, ProjectURL } from "../components/constants";
 import dayjs from "dayjs";
 import { Calendar } from "@mantine/dates";
 import { SegmentedControl } from "@mantine/core";
@@ -53,10 +53,7 @@ const getTTSFromAPI = async (
 //   const imgURL = ProjectURL + `/api/getthumbnail?`;
 // };
 
-const videoURL =
-  "https://res.cloudinary.com/drnm9lhef/video/upload/v1673514377/fireship-remotion-intro/CRAnimation_wvexmw.mp4";
-
-const { free, waitUntilDone } = prefetch(videoURL, {
+const { free, waitUntilDone } = prefetch(animationVideoURL, {
   method: "blob-url",
 });
 
@@ -75,7 +72,9 @@ const Home: NextPage<{
   const playerRef = useRef<PlayerRef>(null);
   const [dateProp, setDateProp] = useState<Date>(initialDate);
   const [audioToLoad, setAudioToLoad] = useState<string>(data.url);
-  const [animationRenderer, setAnimationRenderer] = useState<string>("mp4"); // possible values: "threejs", "mp4"
+  const [animationRenderer, setAnimationRenderer] = useState<"threejs" | "mp4">(
+    "mp4"
+  ); // possible values are "threejs" and "mp4" (default)
 
   const changeDateAndFetchNewAudio = async (newSetDate: Date) => {
     console.log(`Setting new audio URL...`);
