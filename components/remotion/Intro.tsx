@@ -28,7 +28,7 @@ const Intro: React.FC<{
   const { fps, width, height, durationInFrames } = useVideoConfig();
 
   const AudioURL =
-    "https://res.cloudinary.com/drnm9lhef/video/upload/v1675431142/fireship-remotion-intro/camera-shutter.mp3";
+    "https://res.cloudinary.com/drnm9lhef/video/upload/v1677604008/fireship-remotion-intro/camera-shutter.mp3";
 
   // Color for <AbsoluteFill/>
   const backgroundColor: string = "#100E18";
