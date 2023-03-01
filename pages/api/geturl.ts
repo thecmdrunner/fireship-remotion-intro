@@ -5,6 +5,7 @@ import { initializeApp } from "firebase/app";
 import { getStorage, getDownloadURL, ref, uploadBytes } from "firebase/storage";
 import textToSpeech from "@google-cloud/text-to-speech";
 import { NextApiRequest, NextApiResponse } from "next";
+import { API_ACCESS_ALLOWED } from "../../components/constants";
 
 // Init TTS
 const client = new textToSpeech.TextToSpeechClient({
@@ -24,9 +25,6 @@ initializeApp({
   messagingSenderId: process.env.FIREBASE_MESSAGING_SENDER_ID,
   appId: process.env.FIREBASE_APP_ID,
 });
-
-// Toggle this to allow/restrict new audio generation.
-const toDisableAudioAPI = true;
 
 // For upload and creation reference
 const bucketName = "tts-audio-files";
@@ -146,7 +144,7 @@ export default async function handler(
   // AVOIDING CREATION OF NEW AUDIO FILES TO PREVENT API ABUSE
 
   // REMOVE THIS BLOCK TO REVERT BACK TO NORMAL BEHAVIOUR.
-  if (toDisableAudioAPI) {
+  if (!API_ACCESS_ALLOWED) {
     console.log(
       `Tried to generate new audio when restricted: text: ${text}, ssml: ${ssml}.`
     );
