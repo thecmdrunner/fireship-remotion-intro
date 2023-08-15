@@ -2,7 +2,6 @@ import { AbsoluteFill, prefetch } from "remotion";
 import { Player, PlayerRef, RenderPoster } from "@remotion/player";
 import { preloadAudio, resolveRedirect } from "@remotion/preload";
 import { useEffect, useRef, useState, useCallback } from "react";
-import axios from "axios";
 import CompleteVideo from "../components/remotion/CompleteVideo";
 import { animationVideoURL, ProjectURL } from "../components/constants";
 import dayjs from "dayjs";
@@ -38,8 +37,15 @@ const createServerReqObject = (dateToSpeak: string) => {
 
 // Fetch response from API
 const getTTSFromAPI = async (API_URL: string, POSTObject: object) => {
-  const res = await axios.post(API_URL, POSTObject);
-  const data: TTSServerResponse = await res.data;
+  const res = await fetch(API_URL, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      accept: "application/json",
+    },
+    body: JSON.stringify(POSTObject),
+  });
+  const data: TTSServerResponse = await res.json();
 
   return data;
 };
