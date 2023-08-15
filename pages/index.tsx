@@ -10,7 +10,7 @@ import { Calendar } from "@mantine/dates";
 import { SegmentedControl } from "@mantine/core";
 import localFont from "@next/font/local";
 import Link from "next/link";
-import { GetServerSideProps, NextPage } from "next";
+import { GetStaticProps, NextPage } from "next";
 import { NextFont } from "@next/font/dist/types";
 import Image from "next/image";
 
@@ -26,7 +26,7 @@ const CubanoFont: NextFont = localFont({ src: "../components/Cubano.woff2" });
 const API_URL = ProjectURL + "/api/geturl";
 
 // Date when the page is rendered for the first time
-const initialDate = new Date();
+const initialDate = new Date("August 1, 2023 23:15:30");
 
 // Send this to API for response
 const createServerReqObject = (dateToSpeak: string) => {
@@ -37,13 +37,9 @@ const createServerReqObject = (dateToSpeak: string) => {
 };
 
 // Fetch response from API
-const getTTSFromAPI = async (
-  API_URL: string,
-  POSTObject: object
-): Promise<TTSServerResponse> => {
-  const data = await axios.post(API_URL, POSTObject).then((someData) => {
-    return someData.data;
-  });
+const getTTSFromAPI = async (API_URL: string, POSTObject: object) => {
+  const res = await axios.post(API_URL, POSTObject);
+  const data: TTSServerResponse = await res.data;
 
   return data;
 };
@@ -61,18 +57,19 @@ waitUntilDone().then(() => {
   console.log("Video has finished loading from cloudinary!");
 });
 
-// Call free() if you want to un-prefetch and free up the memory:
-free();
+// // Call free() if you want to un-prefetch and free up the memory:
+// free();
+
+type AnimationRenderer = "threejs" | "mp4";
 
 const Home: NextPage<{
   data: TTSServerResponse;
-}> = (props) => {
-  const { data } = props;
-
+}> = ({ data }) => {
   const playerRef = useRef<PlayerRef>(null);
   const [dateProp, setDateProp] = useState<Date>(initialDate);
   const [audioToLoad, setAudioToLoad] = useState<string>(data.url);
-  const [animationRenderer, setAnimationRenderer] = useState("mp4"); // possible values are "threejs" and "mp4" (default)
+  const [animationRenderer, setAnimationRenderer] =
+    useState<AnimationRenderer>("threejs");
 
   const changeDateAndFetchNewAudio = async (newSetDate: Date) => {
     console.log(`Setting new audio URL...`);
@@ -80,7 +77,7 @@ const Home: NextPage<{
     setDateProp(newSetDate);
 
     // fetch new tts audio with new date
-    const newDate = GetToday(newSetDate);
+    const newDate = getToday(newSetDate);
     const dateToSpeak = `${newDate.month} ${newDate.date}${newDate.dateSuffix} ${newDate.year}`;
 
     // Fetch data from external API
@@ -104,7 +101,7 @@ const Home: NextPage<{
     console.log(`Fetching new audio URL...`);
 
     // fetch new tts audio with new date
-    const newDate = GetToday(newSetDate);
+    const newDate = getToday(newSetDate);
     const dateToSpeak = `${newDate.month} ${newDate.date}${newDate.dateSuffix} ${newDate.year}`;
 
     // Fetch data from external API
@@ -164,18 +161,18 @@ const Home: NextPage<{
     );
   }, []);
 
-  const FirstHalfUI = () => {
+  const PlayerUI = () => {
     return (
       <div
         id="firstHalf"
         className="flex flex-col justify-start items-center w-full 2xl:w-3/5 h-max 2xl:h-full bg-gray-800 py-4 px-3"
       >
         <p className={`${CubanoFont.className} text-white text-3xl mb-6`}>
-          Code Report for {`${GetToday(dateProp).date}`}
+          Code Report for {`${getToday(dateProp).date}`}
           <span className="text-[24px]">{`${
-            GetToday(dateProp).dateSuffix
+            getToday(dateProp).dateSuffix
           }`}</span>
-          {` ${GetToday(dateProp).month} ${GetToday(dateProp).year}`}
+          {` ${getToday(dateProp).month} ${getToday(dateProp).year}`}
         </p>
         <div className="my-4 text-white text-lg">
           <p className="text-center font-bold my-1">
@@ -200,7 +197,7 @@ const Home: NextPage<{
               size="lg"
               radius="sm"
               value={animationRenderer}
-              onChange={setAnimationRenderer}
+              onChange={(val: AnimationRenderer) => setAnimationRenderer(val)}
               data={[
                 { label: "📽 MP4 Video", value: "mp4" },
                 {
@@ -247,7 +244,7 @@ const Home: NextPage<{
     );
   };
 
-  const SecondHalfUI = () => {
+  const ConfigUI = () => {
     return (
       <div
         id="secondHalf"
@@ -263,13 +260,13 @@ const Home: NextPage<{
               // minDate={dayjs(new Date("December 1, 2022 23:15:30")).toDate()}
               // maxDate={dayjs(new Date("February 28, 2023 23:15:30")).toDate()}
               // Relative dates
-              minDate={dayjs(new Date())
+              minDate={dayjs(new Date("August 1, 2023 23:15:30"))
                 .startOf("month")
-                .subtract(15, "days")
+                // .subtract(15, "days")
                 .toDate()}
-              maxDate={dayjs(new Date())
+              maxDate={dayjs(new Date("August 31, 2023 23:15:30"))
                 .endOf("month")
-                .add(15, "days")
+                // .add(15, "days")
                 .toDate()}
             />
           </div>
@@ -279,8 +276,8 @@ const Home: NextPage<{
               firebase bucket.
             </div>
             <div className="bg-yellow-400 p-2 rounded-md font-semibold my-2">
-              Only 15 days of the previous and next months are shown, to keep
-              the Google Cloud billing in control.
+              The date range only includes August, to keep the Google Cloud
+              billing in control.
             </div>
           </div>
         </div>
@@ -406,14 +403,14 @@ const Home: NextPage<{
   };
   return (
     <div className="h-screen flex w-full 2xl:flex-row flex-col mx-auto selection:marker:bg-cyan-200">
-      {FirstHalfUI()}
-      {SecondHalfUI()}
+      {PlayerUI()}
+      {ConfigUI()}
     </div>
   );
 };
 
 // Returns formatted date object
-const GetToday = (today: Date) => {
+const getToday = (today: Date) => {
   const day: any = today.toLocaleDateString("en-US", { day: "numeric" });
   const month = today.getMonth(); // This only gets you the month number
   const year = today.getFullYear();
@@ -458,9 +455,8 @@ const GetToday = (today: Date) => {
   return DateObject;
 };
 
-// This gets called on every request
-export const getServerSideProps: GetServerSideProps = async () => {
-  const Today = GetToday(new Date(initialDate));
+export const getStaticProps: GetStaticProps = async () => {
+  const Today = getToday(new Date(initialDate));
   const dateToSpeak = `${Today.month} ${Today.date}${Today.dateSuffix} ${Today.year}`;
 
   // Fetch data from external API
